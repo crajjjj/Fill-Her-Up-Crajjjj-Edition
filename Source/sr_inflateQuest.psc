@@ -378,6 +378,9 @@ Function maintenance()
 
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend" )
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume" )
+	; a suspend whose resume never came (scene interrupted, then saved) would
+	; otherwise hold auto-deflation for the rest of the save
+	dhlpSuspend = false
 
 	if config.enabled
 		RegisterForModEvent("HookOrgasmStart", "Orgasm")
@@ -2284,7 +2287,10 @@ State MonitoringInflation
 								deflateVag = false
 							EndIf
 						EndIf
-						If deflateAnal || deflateVag
+						; one animated deflation per tick, but digestion is silent bookkeeping that
+						; feeds the anal pool: held behind the anal/vaginal turn it stalls for as long
+						; as the gut never empties (plug, No Deflation, a refill every scene)
+						If (deflateAnal || deflateVag) && sr_OnEventAbsorbSpermOral.getvalue() != 1
 							deflateOral = false
 						EndIf
 
