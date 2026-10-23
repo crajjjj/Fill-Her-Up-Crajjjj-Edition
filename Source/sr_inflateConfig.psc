@@ -187,6 +187,7 @@ bool BeeingFemale
 
 int FHUSLIFOID
 int FHUSLIFNullOID
+int FHUSLIFNGInfoOID
 
 float Property debugAmount auto hidden
 bool Property debugVaginalPool auto hidden
@@ -642,25 +643,25 @@ Event OnPageReset(String page)
 			BodyMorphOID = AddToggleOption("$FHU_BodyMorph", BodyMorph, OPTION_FLAG_DISABLED)
 		else
 			FHUMorphStringOID = AddInputOption("$FHU_MORPHSTRING", FHUMorphString)
-			if SLIF_Installed
+			if SLIF_Installed && !inflater.HasSlifNG()
 				FHUMorphSLIFOID = AddToggleOption("$FHU_MORPHSLIF", FHUMorphSLIF)
 			else
 				FHUMorphSLIFOID = AddToggleOption("$FHU_MORPHSLIF", false, OPTION_FLAG_DISABLED)
 			endif
 			FHUMorphString2OID = AddInputOption("$FHU_MORPHSTRING2", FHUMorphString2)
-			if SLIF_Installed
+			if SLIF_Installed && !inflater.HasSlifNG()
 				FHUMorphSLIF2OID = AddToggleOption("$FHU_MORPHSLIF2", FHUMorphSLIF2)
 			else
 				FHUMorphSLIF2OID = AddToggleOption("$FHU_MORPHSLIF2", false, OPTION_FLAG_DISABLED)
 			endif
 			FHUMorphString3OID = AddInputOption("$FHU_MORPHSTRING3", FHUMorphString3)
-			if SLIF_Installed
+			if SLIF_Installed && !inflater.HasSlifNG()
 				FHUMorphSLIF3OID = AddToggleOption("$FHU_MORPHSLIF3", FHUMorphSLIF3)
 			else
 				FHUMorphSLIF3OID = AddToggleOption("$FHU_MORPHSLIF3", false, OPTION_FLAG_DISABLED)
 			endif
 			FHUMorphString4OID = AddInputOption("$FHU_MORPHSTRING4", FHUMorphString4)
-			if SLIF_Installed
+			if SLIF_Installed && !inflater.HasSlifNG()
 				FHUMorphSLIF4OID = AddToggleOption("$FHU_MORPHSLIF4", FHUMorphSLIF4)
 			else
 				FHUMorphSLIF4OID = AddToggleOption("$FHU_MORPHSLIF4", false, OPTION_FLAG_DISABLED)
@@ -675,6 +676,9 @@ Event OnPageReset(String page)
 			EndIf
 		else
 			FHUSLIFOID = AddToggleOption("$FHU_SLIF", FHUSLIF, OPTION_FLAG_DISABLED)
+		endif
+		if inflater.HasSlifNG()
+			FHUSLIFNGInfoOID = AddTextOption("$FHU_SLIFNG", "$FHU_SLIFNG_ON")
 		endif
 		BodyMorphApplyPeriodOID = AddSliderOption("$FHU_BODYMORPH_APPLY_PERIOD", BodyMorphApplyPeriod, "{1}")
 		addRaceKeyOID = AddKeyMapOption("$FHU_ADD_RACE", addRaceKey, OPTION_FLAG_WITH_UNMAP)
@@ -1386,6 +1390,8 @@ State settings
 			SetInfoText("$FHU_CUM_EFFECTS_HELP")
 		ElseIf opt == FHUSLIFOID
 			SetInfoText("$FHU_SLIF_HELP")
+		ElseIf inflater.HasSlifNG() && opt == FHUSLIFNGInfoOID
+			SetInfoText("$FHU_SLIFNG_HELP")
 		ElseIf opt == SaveConfigOID
 			SetInfoText("Save Config to file")
 		ElseIf opt == LoadConfigOID

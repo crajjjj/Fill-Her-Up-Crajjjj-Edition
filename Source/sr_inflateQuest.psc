@@ -162,6 +162,16 @@ String property InflateMorph3 = "" Auto
 String property InflateMorph4 = "" Auto
 String property PregnancyBelly = "PregnancyBelly" AutoReadOnly hidden
 String Property BELLY_NODE = "NPC Belly" autoreadonly hidden
+; SLIF NG: one canonical key for the whole belly, resolved per actor through the body
+; profile (3BA, BHUNP, UBE each pick their own sliders). The old direct PregnancyBelly
+; morph was amount/10; the 3BA profile maps a node deviation d to d/7.5 of the same
+; slider, so 0.75 keeps the look on 3BA and lets other bodies apply their correction.
+String Property SLIF_MOD = "Fill Her Up" autoreadonly hidden
+String Property SLIF_BELLY = "slif_belly" autoreadonly hidden
+float Property SLIF_UNIT = 0.75 autoreadonly hidden
+String Property SLIFNG_MIGRATED = "sr.inflater.slifng.migrated" autoreadonly hidden
+bool hasSlif ; SexLab Inflation Framework.esp is present (old SLIF or SLIF NG); set in maintenance
+bool hasSlifNG ; the SLIF NG engine (SKSE plugin "SLIFNG") is loaded; set in maintenance
 String Property ANIMATING = "sr.inflater.animating" autoreadonly hidden
 String Property ANIMATE_NUM = "sr.inflater.animate.num" autoreadonly hidden
 String Property ANIMATING_SPERMTYPE = "sr.inflater.animating.spermtype" autoreadonly hidden
@@ -381,6 +391,11 @@ Function maintenance()
 	; a suspend whose resume never came (scene interrupted, then saved) would
 	; otherwise hold auto-deflation for the rest of the save
 	dhlpSuspend = false
+	hasSlif = Game.GetModByName("SexLab Inflation Framework.esp") != 255
+	hasSlifNG = SKSE.GetPluginVersion("SLIFNG") != -1
+	If hasSlifNG
+		SlifMigrate()
+	EndIf
 
 	if config.enabled
 		RegisterForModEvent("HookOrgasmStart", "Orgasm")
@@ -2001,36 +2016,7 @@ Function RestoreActors()
 			; stale/deleted entry cleaned up above - skip the rest so we don't deref None
 		Else
 		log("Restoring inflation for " + a.GetLeveledActorBase().GetName() + "...")
-		If config.bellyScale
-			if config.Bodymorph
-				;SetBellyMorphValue(a, GetInflation(a), "PregnancyBelly")
-				
-				if InflateMorph2 != ""
-					SetBellyMorphValue(a, GetInflation(a), InflateMorph2)
-				endIf
-				
-				if InflateMorph3 != ""
-					SetBellyMorphValue(a, GetInflation(a), InflateMorph3)
-				endif
-
-				if InflateMorph4 != ""
-					If InflateMorph == InflateMorph4
-						SetBellyMorphValue(a, GetInflation(a) + GetOralCum(a), InflateMorph)
-					Else
-						SetBellyMorphValue(a, GetInflation(a), InflateMorph)
-						SetBellyMorphValue(a, GetOralCum(a), InflateMorph4)
-					EndIf
-				Else
-					SetBellyMorphValue(a, GetInflation(a), InflateMorph)
-				endif
-			Else
-				; ( change by 15, sent to SLIF sum of all pools
-				; SetNodeScale(a, BELLY_NODE, GetInflation(a))
-				SetNodeScale(a, BELLY_NODE, GetInflation(a) + GetOralCum(a))
-				; by 15 )
-			Endif
-			
-		endIf
+		ApplyBellyMorphs(a) ; same routine as every other re-apply (SLIF NG key, morphs or node)
 		UpdateFaction(a)
 		UpdateOralFaction(a)
 		EncumberActor(a)
@@ -2502,7 +2488,9 @@ Function ResetActorState(Form f)
 		EndIf
         log("Resetting " + name + ": " + f + "...")
         if a && config.bellyScale
-			if config.Bodymorph
+			If UseSlifNG()
+				SLIFNG.UnregisterMod(a, SLIF_MOD)
+			elseif config.Bodymorph
 				;SetBellyMorphValue(a, 0.0, "PregnancyBelly")
 				SetBellyMorphValue(a, 0.0, InflateMorph)
 				if InflateMorph2 != ""
@@ -2514,6 +2502,7 @@ Function ResetActorState(Form f)
 				if InflateMorph4 != ""
 						SetBellyMorphValue(a, 0.0, InflateMorph4)
 				endif
+				FinishBellyMorphs(a)
 			Else
 				RemoveNodeScale(a, BELLY_NODE)
 			Endif
@@ -2937,19 +2926,28 @@ Function EncumberActor(Actor a)
 	If !config.encumber || a == None
 		return
 	EndIf
-	UnencumberActor(a)
 	int fullness = a.GetFactionRank(inflateFaction)
-	Utility.Wait(2.0) ; Removing and reapplying the same spell seems to fail on reapply, maybe this fixes it?
+	Spell wanted = None
 	If fullness > 86
-		a.AddSpell(encumber25, false)
+		wanted = encumber25
 	ElseIf fullness > 72
-		a.AddSpell(encumber20, false)
+		wanted = encumber20
 	ElseIf fullness > 58
-		a.AddSpell(encumber15, false)
+		wanted = encumber15
 	ElseIf fullness > 44
-		a.AddSpell(encumber10, false)
+		wanted = encumber10
 	ElseIf fullness > 20
-		a.AddSpell(encumber05, false)
+		wanted = encumber05
+	EndIf
+	; the tier is already on: leave it. The old remove-everything-then-re-add of the
+	; very spell the actor held is what needed a 2 s wait (and held the caller, the
+	; hourly tick included, for those 2 s per actor)
+	If wanted && a.HasSpell(wanted)
+		return
+	EndIf
+	UnencumberActor(a)
+	If wanted
+		a.AddSpell(wanted, false)
 	EndIf
 EndFunction
 
@@ -3042,6 +3040,10 @@ Function ApplyBellyMorphs(Actor a)
 	If !config.bellyScale
 		return
 	EndIf
+	If UseSlifNG()
+		SlifBelly(a, GetInflation(a) + GetOralCum(a), config.BodyMorphApplyPeriod)
+		return
+	EndIf
 	if config.Bodymorph
 		if InflateMorph2 != ""
 			SetBellyMorphValue(a, GetInflation(a), InflateMorph2)
@@ -3059,6 +3061,7 @@ Function ApplyBellyMorphs(Actor a)
 		Else
 			SetBellyMorphValue(a, GetInflation(a), InflateMorph)
 		endif
+		FinishBellyMorphs(a)
 	Else
 		SetNodeScale(a, BELLY_NODE, GetInflation(a) + GetOralCum(a))
 	Endif
@@ -3615,6 +3618,78 @@ Function error(String msg)
 	log(" ================================================================")
 EndFunction
 
+; ---- SLIF NG --------------------------------------------------------------------
+; With the SLIF NG engine present the belly is ONE value on the canonical slif_belly
+; key: the engine ramps changes natively (its incremental inflation, a quarter-second
+; cadence off the VM) and the actor's body profile turns the value into that body's
+; sliders. FHU sends a final value once per change instead of stepping its own morphs
+; every 0.2 s (SLIF NG write API: "send your final intended value once").
+bool Function HasSlifNG()
+	return hasSlifNG
+EndFunction
+
+bool Function UseSlifNG()
+	return hasSlifNG && config.FHUSLIF
+EndFunction
+
+; amount = the pool total in FHU units (vaginal + anal + oral); seconds = how long the
+; change should take (0 = land at once). Nothing left = drop FHU's row.
+Function SlifBelly(Actor a, float amount, float seconds)
+	If !a
+		return
+	EndIf
+	If amount <= 0.0
+		SLIFNG.UnregisterNode(a, SLIF_BELLY, SLIF_MOD)
+		return
+	EndIf
+	float target = 1.0 + amount * SLIF_UNIT
+	float increment = 100.0 ; one step covers the whole distance
+	If seconds > 0.0
+		float delta = Math.abs(target - SLIFNG.GetValue(a, SLIF_MOD, SLIF_BELLY, 1.0))
+		If delta > 0.0
+			increment = delta / (seconds * 4.0) ; the engine steps once per quarter second
+			If increment < 0.01
+				increment = 0.01
+			EndIf
+		EndIf
+	EndIf
+	SLIFNG.Inflate(a, SLIF_MOD, SLIF_BELLY, target, -1.0, -1.0, -1.0, increment, "")
+EndFunction
+
+; One shot per save: FHU used to write its sliders as direct morphs under the same mod
+; name, and within one mod the direct layer ADDS to the key, so those rows must go
+; before the key takes over. Node rows need no cleanup: "NPC Belly" and slif_belly are
+; the same ledger target, the new write replaces them.
+Function SlifMigrate()
+	If GetIntValue(self, SLIFNG_MIGRATED) == 1
+		return
+	EndIf
+	int n = FormListCount(self, INFLATED_ACTORS)
+	while n > 0
+		n -= 1
+		Actor a = FormListGet(self, INFLATED_ACTORS, n) as Actor
+		If a
+			SlifDropMorphs(a)
+			ApplyBellyMorphs(a)
+		EndIf
+	endWhile
+	SetIntValue(self, SLIFNG_MIGRATED, 1)
+	log("SLIF NG: belly moved to the slif_belly key")
+EndFunction
+
+Function SlifDropMorphs(Actor a)
+	SLIFNG.UnregisterMorph(a, InflateMorph, SLIF_MOD)
+	If InflateMorph2 != ""
+		SLIFNG.UnregisterMorph(a, InflateMorph2, SLIF_MOD)
+	EndIf
+	If InflateMorph3 != ""
+		SLIFNG.UnregisterMorph(a, InflateMorph3, SLIF_MOD)
+	EndIf
+	If InflateMorph4 != ""
+		SLIFNG.UnregisterMorph(a, InflateMorph4, SLIF_MOD)
+	EndIf
+EndFunction
+
 Function SLIF_inflate(Actor kActor, String sKey, float value)
 	int SLIF_event = ModEvent.Create("SLIF_inflate")
 	If (SLIF_event)
@@ -3647,11 +3722,11 @@ String Property FHU_MODKEY = "FHU_MODKEY" autoreadonly
 ; Sets a transformation with the given key in 3rd and 1st person skeleton to the given scale (Quicker, Recommended if not 3rd or 1st person dependent)
 Function SetNodeScale(Actor akActor, string nodeName, float value)
 	if (akActor)
-		if (Game.GetModbyName("SexLab Inflation Framework.esp") != 255)
+		if hasSlif
 			SLIF_inflate(akActor, nodeName, value)
 		else
 			bool isFemale = akActor.GetLeveledActorBase().GetSex() == 1
-			bool isPlayer = akActor == Game.GetPlayer()
+			bool isPlayer = akActor == player
 			If value > 1.0
 				NiOverride.AddNodeTransformScale(akActor, false, isFemale, nodeName, FHU_MODKEY, value)
 				if (isPlayer)
@@ -3677,11 +3752,11 @@ EndFunction
 
 Function RemoveNodeScale(Actor akActor, string nodeName)
 	if (akActor)
-		if (Game.GetModbyName("SexLab Inflation Framework.esp") != 255)
+		if hasSlif
 			SLIF_unregisterNode(akActor, nodeName)
 		endIf
 		bool isFemale = akActor.GetLeveledActorBase().GetSex() == 1
-		bool isPlayer = akActor == Game.GetPlayer()
+		bool isPlayer = akActor == player
 		NiOverride.RemoveNodeTransformScale(akActor, false, isFemale, nodeName, FHU_MODKEY)
 		if (isPlayer)
 			NiOverride.RemoveNodeTransformScale(akActor, true, isFemale, nodeName, FHU_MODKEY)
@@ -3738,7 +3813,12 @@ Function SetBellyMorphValue(Actor akActor, float value, string MorphName)
 			NiOverride.SetBodyMorph(akActor, MorphName, FHU_KEY, value/10)
 			NiOverride.ClearBodyMorph(akActor, MorphName, FHU_KEY)
 		endif
-	EndIf	
+	EndIf
+EndFunction
+
+; One model rebuild per batch of slider writes. It used to run inside every
+; SetBellyMorphValue, four times a tick with four sliders; callers finish with it.
+Function FinishBellyMorphs(Actor akActor)
 	NiOverride.UpdateModelWeight(akActor);Pregnancy Swapper
 	int eid = ModEvent.Create("PNSUpdateRequest")
 	ModEvent.PushForm(eid, akActor)

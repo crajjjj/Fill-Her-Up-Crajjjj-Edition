@@ -246,6 +246,16 @@ Function doPushDeflate(String pool, Actor p, float currentInf, float startVag, f
                currentInf = 0
        EndIf
 
+	if inflater.UseSlifNG()
+		; one ramped key write per apply period; the engine smooths between them
+		if pool == inflater.CUM_VAGINAL || pool == inflater.CUM_ANAL
+			inflater.SlifBelly(p, currentInf + startOral, inflater.config.BodyMorphApplyPeriod)
+		else
+			inflater.SlifBelly(p, currentInf + startVag + startAn, inflater.config.BodyMorphApplyPeriod)
+		endif
+		return
+	endif
+
 	if bAnimController ;Prevents serious FPS drop due to heavy code stacks.
 		bAnimController = false
 		if config.BodyMorph
@@ -275,6 +285,7 @@ Function doPushDeflate(String pool, Actor p, float currentInf, float startVag, f
 					;log("deflate SetBellyMorphValue4 currentInf:" + currentInf + inflater.GetOralCum(p) + ".Cum:" + cum )
 				endif
 			endif
+			inflater.FinishBellyMorphs(p)
 		endif
 
 		if !config.BodyMorph ;SLIF: oralcum now inflates belly node also. Should be capped by cum condition in deflate function

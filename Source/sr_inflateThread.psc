@@ -144,6 +144,15 @@ Function doInflation(Actor p, bool isVaginalOrAnal, float currentInf, float star
 	If currentInf <= 0
 		currentInf = 0
 	EndIf
+	if inflater.UseSlifNG()
+		; one key, ramped by the engine; the pools not being animated stand at their start values
+		if isVaginalOrAnal
+			inflater.SlifBelly(p, currentInf + startOral, config.BodyMorphApplyPeriod)
+		else
+			inflater.SlifBelly(p, currentInf + startVag + startAn, config.BodyMorphApplyPeriod)
+		endif
+		return
+	endif
 	if config.BodyMorph 
 		if isVaginalOrAnal
 				; to cover same morph for oral and vag/anal
@@ -171,6 +180,7 @@ Function doInflation(Actor p, bool isVaginalOrAnal, float currentInf, float star
 				;log("deflate SetBellyMorphValue4 currentInf:" + currentInf + inflater.GetOralCum(p) + ".Cum:" + cum )
 			endif
 		endif
+		inflater.FinishBellyMorphs(p)
 	endif
 
 	if !config.BodyMorph ;SLIF: oralcum now inflates belly node also. Should be capped by cum condition in deflate function
@@ -329,6 +339,11 @@ Function Inflate()
 	bool BodyMorphApplied = true
 	
 	if(inflater.config.bellyScale)
+		if inflater.UseSlifNG()
+			; SLIF NG ramps natively: send the final belly once, sized to land in tme
+			inflater.SlifBelly(akActor, inflationTarget + oralCum, tme)
+			Utility.wait(tme)
+		else
 		while(currentInflation < inflationTarget)
 			currentInflation += step
 			BodyMorphApplied = false
@@ -360,6 +375,7 @@ Function Inflate()
 
 		if !BodyMorphApplied
 			doInflation(akActor, false, oralCum, startVag, startAn, startOral)
+		endif
 		endif
 	EndIf
 	
@@ -504,6 +520,15 @@ Function Deflate()
 		; Only actually deflate if total cum is less than max belly size
 		If inflater.config.bellyScale
 			If akActor.Is3DLoaded()
+				if inflater.UseSlifNG()
+					; SLIF NG ramps natively: send the final belly once, sized to land in tme
+					if isAnal || isVaginal
+						inflater.SlifBelly(akActor, deflateTarget + startOral, tme)
+					else
+						inflater.SlifBelly(akActor, deflateTarget + startVag + startAn, tme)
+					endif
+					Utility.Wait(tme)
+				else
 				while currentInflation > deflateTarget
 					currentInflation -= step
 					tick -= 0.2
@@ -515,6 +540,7 @@ Function Deflate()
 					endif
 					Utility.Wait(0.2)
 				endWhile
+				endif
 			EndIf
 			
 			if !BodyMorphApplied
@@ -736,6 +762,15 @@ Function Absorb()
 		; Only actually deflate if total cum is less than max belly size - loo
 		If inflater.config.bellyScale
 			If akActor.Is3DLoaded()
+				if inflater.UseSlifNG()
+					; SLIF NG ramps natively: send the final belly once, sized to land in tme
+					if isAnal || isVaginal
+						inflater.SlifBelly(akActor, deflateTarget + startOral, tme)
+					else
+						inflater.SlifBelly(akActor, deflateTarget + startVag + startAn, tme)
+					endif
+					Utility.Wait(tme)
+				else
 				while currentInflation > deflateTarget
 					currentInflation -= step
 					tick -= 0.2
@@ -747,6 +782,7 @@ Function Absorb()
 					endif
 					Utility.Wait(0.2)
 				endWhile
+				endif
 			EndIf
 			
 			If !BodyMorphApplied
