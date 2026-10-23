@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<SliderSetInfo version="1">
+    <SliderSet name="FHU Tongue 01">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 01.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga1</OutputFile>
+        <Shape target="Tongue">Tongue</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="TongueTongueUp" target="Tongue" local="true">FHU Tongue 01.osd\TongueTongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="TongueTongueBack" target="Tongue" local="true">FHU Tongue 01.osd\TongueTongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="TongueTongueFront" target="Tongue" local="true">FHU Tongue 01.osd\TongueTongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 02">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 02.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga2</OutputFile>
+        <Shape target="Tongue_2">Tongue_2</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_2TongueUp" target="Tongue_2" local="true">FHU Tongue 02.osd\Tongue_2TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_2TongueBack" target="Tongue_2" local="true">FHU Tongue 02.osd\Tongue_2TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_2TongueFront" target="Tongue_2" local="true">FHU Tongue 02.osd\Tongue_2TongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 03">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 03.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga3</OutputFile>
+        <Shape target="Tongue_3">Tongue_3</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_3TongueUp" target="Tongue_3" local="true">FHU Tongue 03.osd\Tongue_3TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_3TongueBack" target="Tongue_3" local="true">FHU Tongue 03.osd\Tongue_3TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_3TongueFront" target="Tongue_3" local="true">FHU Tongue 03.osd\Tongue_3TongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 04">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 04.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga4</OutputFile>
+        <Shape target="Tongue_4">Tongue_4</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_4TongueUp" target="Tongue_4" local="true">FHU Tongue 04.osd\Tongue_4TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_4TongueBack" target="Tongue_4" local="true">FHU Tongue 04.osd\Tongue_4TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_4TongueFront" target="Tongue_4" local="true">FHU Tongue 04.osd\Tongue_4TongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 07">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 07.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga7</OutputFile>
+        <Shape target="Tongue_7">Tongue_7</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_7TongueUp" target="Tongue_7" local="true">FHU Tongue 07.osd\Tongue_7TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_7TongueBack" target="Tongue_7" local="true">FHU Tongue 07.osd\Tongue_7TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_7TongueFront" target="Tongue_7" local="true">FHU Tongue 07.osd\Tongue_7TongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 10">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 10.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga10</OutputFile>
+        <Shape target="Tongue_10">Tongue_10</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_10TongueUp" target="Tongue_10" local="true">FHU Tongue 10.osd\Tongue_10TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_10TongueBack" target="Tongue_10" local="true">FHU Tongue 10.osd\Tongue_10TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_10TongueFront" target="Tongue_10" local="true">FHU Tongue 10.osd\Tongue_10TongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 05">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 05.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga5</OutputFile>
+        <Shape target="Tongue_5">Tongue_5</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_5TongueUp" target="Tongue_5" local="true">FHU Tongue 05.osd\Tongue_5TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_5TongueBack" target="Tongue_5" local="true">FHU Tongue 05.osd\Tongue_5TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_5TongueFront" target="Tongue_5" local="true">FHU Tongue 05.osd\Tongue_5TongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 06">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 06.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga6</OutputFile>
+        <Shape target="Tongue_6">Tongue_6</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_6TongueUp" target="Tongue_6" local="true">FHU Tongue 06.osd\Tongue_6TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_6TongueBack" target="Tongue_6" local="true">FHU Tongue 06.osd\Tongue_6TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_6TongueFront" target="Tongue_6" local="true">FHU Tongue 06.osd\Tongue_6TongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 08">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 08.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga8</OutputFile>
+        <Shape target="Tongue_8">Tongue_8</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_8TongueUp" target="Tongue_8" local="true">FHU Tongue 08.osd\Tongue_8TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_8TongueBack" target="Tongue_8" local="true">FHU Tongue 08.osd\Tongue_8TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_8TongueFront" target="Tongue_8" local="true">FHU Tongue 08.osd\Tongue_8TongueFront</Data>
+        </Slider>
+    </SliderSet>
+    <SliderSet name="FHU Tongue 09">
+        <DataFolder>FHU Tongue</DataFolder>
+        <SourceFile>FHU Tongue 09.nif</SourceFile>
+        <OutputPath>meshes\morten\lingas</OutputPath>
+        <OutputFile GenWeights="false">linga9</OutputFile>
+        <Shape target="Tongue_9">Tongue_9</Shape>
+        <Slider name="TongueUp" invert="false" default="0">
+            <Data name="Tongue_9TongueUp" target="Tongue_9" local="true">FHU Tongue 09.osd\Tongue_9TongueUp</Data>
+        </Slider>
+        <Slider name="TongueBack" invert="false" default="0">
+            <Data name="Tongue_9TongueBack" target="Tongue_9" local="true">FHU Tongue 09.osd\Tongue_9TongueBack</Data>
+        </Slider>
+        <Slider name="TongueFront" invert="false" default="0">
+            <Data name="Tongue_9TongueFront" target="Tongue_9" local="true">FHU Tongue 09.osd\Tongue_9TongueFront</Data>
+        </Slider>
+    </SliderSet>
+</SliderSetInfo>

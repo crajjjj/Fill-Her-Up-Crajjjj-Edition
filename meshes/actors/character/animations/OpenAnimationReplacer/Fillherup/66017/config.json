@@ -1,0 +1,30 @@
+{
+    "name": "FHU_ChaurusEggsA",
+    "priority": 1003,
+    "conditions": [
+        {
+            "condition": "FactionRank",
+            "requiredVersion": "1.0.0.0",
+            "Faction": {
+                "pluginName": "sr_FillHerUp.esp",
+                "formID": "E6E1E"
+            },
+            "Comparison": "==",
+            "Numeric value": {
+                "value": 4.0
+            }
+        },
+        {
+            "condition": "FactionRank",
+            "requiredVersion": "1.0.0.0",
+            "Faction": {
+                "pluginName": "sr_FillHerUp.esp",
+                "formID": "193070"
+            },
+            "Comparison": "!=",
+            "Numeric value": {
+                "value": 1.0
+            }
+        }
+    ]
+}

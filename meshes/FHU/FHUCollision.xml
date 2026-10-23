@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system>
+	
+	<per-triangle-shape name="FHUEgg01">
+    <margin>0.1</margin>
+	<penetration>0.1</penetration>
+	<shared>public</shared>  
+      <tag>VirtualPenis</tag>
+	 <no-collide-with-tag>BaseShape</no-collide-with-tag>
+	 <no-collide-with-tag>CBBE</no-collide-with-tag>	
+	 <no-collide-with-tag>Labia</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualCreatureBody</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualPenis</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualLegs</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualArms</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualHead</no-collide-with-tag>
+	 </per-triangle-shape>
+	 
+	<per-triangle-shape name="FHUEgg02">
+    <margin>0.1</margin>
+	<penetration>0.1</penetration>
+	<shared>public</shared>  
+      <tag>VirtualPenis</tag>
+	 <no-collide-with-tag>BaseShape</no-collide-with-tag>
+	 <no-collide-with-tag>CBBE</no-collide-with-tag>	
+	 <no-collide-with-tag>Labia</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualCreatureBody</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualPenis</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualLegs</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualArms</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualHead</no-collide-with-tag>
+	 </per-triangle-shape>
+
+	<per-triangle-shape name="FHUEgg03">
+    <margin>0.1</margin>
+	<penetration>0.1</penetration>
+	<shared>public</shared>  
+      <tag>VirtualPenis</tag>
+	 <no-collide-with-tag>BaseShape</no-collide-with-tag>
+	 <no-collide-with-tag>CBBE</no-collide-with-tag>	
+	 <no-collide-with-tag>Labia</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualCreatureBody</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualPenis</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualLegs</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualArms</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualHead</no-collide-with-tag>
+	 </per-triangle-shape>
+
+	<per-triangle-shape name="FHUWorm">
+    <margin>0.1</margin>
+	<penetration>0.1</penetration>
+	<shared>public</shared>  
+      <tag>VirtualPenis</tag>
+	 <no-collide-with-tag>BaseShape</no-collide-with-tag>
+	 <no-collide-with-tag>CBBE</no-collide-with-tag>	
+	 <no-collide-with-tag>Labia</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualCreatureBody</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualPenis</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualLegs</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualArms</no-collide-with-tag>
+	 <no-collide-with-tag>VirtualHead</no-collide-with-tag>
+	 </per-triangle-shape>
+
+</system>

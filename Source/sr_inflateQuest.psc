@@ -837,12 +837,27 @@ Utility.wait(6.0)
 MfgConsoleFuncExt.ResetMfg(aksource as Actor)
 EndFunction
 
+; SexLab P+ reports 2.x; classic SexLab 1.6x
+bool Function IsSexLabPPlus()
+	String ver = SexLabUtil.GetStringVer()
+	return StringUtil.Find(ver, "2.") == 0
+EndFunction
+
 Function UseSexlabVoice(actor ActorRef, int Strength, bool isvictim)
+	if !ActorRef
+		return
+	endif
 	if sr_IntAudioUtil.TryMoan(ActorRef, Strength)
 		return ; played through the actor's AudioUtil voice pack (gag-muffled when gagged)
 	endif
+	; legacy SexLab PlayMoan is unsafe / non-functional on SexLab P+ outside scenes (Baka 2.11 guard)
+	if IsSexLabPPlus()
+		return
+	endif
 	sslBaseVoice voice = SexLab.GetVoice(ActorRef)
-	voice.PlayMoan(ActorRef, Strength, isvictim, true)
+	if voice
+		voice.PlayMoan(ActorRef, Strength, isvictim, true)
+	endif
 EndFunction
 
 float Function GetCumAmountForActor(Actor a, Actor[] all)

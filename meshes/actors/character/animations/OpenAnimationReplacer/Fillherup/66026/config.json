@@ -1,0 +1,30 @@
+{
+    "name": "FHU_SprigganSlug",
+    "priority": 1007,
+    "conditions": [
+        {
+            "condition": "FactionRank",
+            "requiredVersion": "1.0.0.0",
+            "Faction": {
+                "pluginName": "sr_FillHerUp.esp",
+                "formID": "E6E1E"
+            },
+            "Comparison": "==",
+            "Numeric value": {
+                "value": 5.0
+            }
+        },
+        {
+            "condition": "FactionRank",
+            "requiredVersion": "1.0.0.0",
+            "Faction": {
+                "pluginName": "sr_FillHerUp.esp",
+                "formID": "A991"
+            },
+            "Comparison": ">=",
+            "Numeric value": {
+                "value": 50.0
+            }
+        }
+    ]
+}

@@ -10,7 +10,7 @@
     Final="false">
     <Variables>
         <!-- Set the name of your mod: -->
-        <Variable Name="ModName" Value="FHU crajjj edition 1.0.1" />
+        <Variable Name="ModName" Value="FHU crajjj edition 1.0.2" />
         <!-- <Variable Name="ModName" Value="FHU baka 2.0.3 patch" /> -->
         <!-- The folder where you store all of your mods -->
         <Variable Name="ModsFolder" Value="C:\Playground\Skyrim\mods" />
@@ -70,6 +70,8 @@
             <Match In="Interface">*</Match>
             <Match In="Sound">*</Match>
             <Match In="textures">*</Match>
+            <Match In="meshes">*</Match>
+            <Match In="CalienteTools">*</Match>
             <Match In="SEQ">*</Match>
             <Match In="SKSE\Plugins\AudioUtil\config">*.toml</Match>
         </ZipFile>
