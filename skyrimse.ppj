@@ -74,6 +74,7 @@
             <Match In="CalienteTools">*</Match>
             <Match In="SEQ">*</Match>
             <Match In="SKSE\Plugins\AudioUtil\config">*.toml</Match>
+            <Match In="SKSE\Plugins\FillHerUp">*.json</Match>
         </ZipFile>
     </ZipFiles>
 </PapyrusProject>
