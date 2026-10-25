@@ -1586,7 +1586,7 @@ State events
 			int idx = ToggleSlotID.Find(opt)
 			if (idx >= 0)
 				bToggleSlot[idx] = !bToggleSlot[idx]
-				IgnoreArmorSlot(SRSlotMask, SRSlotMaskB, idx + 30, !bToggleSlot[idx])
+				IgnoreArmorSlot(SRSlotMask, SRSlotMaskB, idx + 30, bToggleSlot[idx])
 				SetToggleOptionValue(opt, bToggleSlot[idx])
 			endif
 		EndIf
@@ -2246,10 +2246,10 @@ Function IgnoreArmorSlot(GlobalVariable IgnoredArmorSlotsMask, GlobalVariable Ig
 	Int CurrentArmorSlotsMaskA = IgnoredArmorSlotsMask.GetValue() As Int
 	Int CurrentIgnoredArmorSlotsMask = Math.LogicalOr(CurrentArmorSlotsMaskA, CurrentArmorSlotsMaskB)
 	
-	Int NewIgnoredArmorSlotsMask
-	If Ignore == False
+	Int NewIgnoredArmorSlotsMask = CurrentIgnoredArmorSlotsMask
+	If Ignore
 		NewIgnoredArmorSlotsMask = Math.LogicalOr(ArmorSlotMask, CurrentIgnoredArmorSlotsMask)
-	Else
+	ElseIf Math.LogicalAnd(ArmorSlotMask, CurrentIgnoredArmorSlotsMask) != 0
 		NewIgnoredArmorSlotsMask = Math.LogicalXor(ArmorSlotMask, CurrentIgnoredArmorSlotsMask)
 	EndIf
 	
