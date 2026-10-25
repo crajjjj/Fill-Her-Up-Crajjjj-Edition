@@ -19,7 +19,7 @@
             "requiredVersion": "1.0.0.0",
             "Faction": {
                 "pluginName": "sr_FillHerUp.esp",
-                "formID": "19306F\u00006F"
+                "formID": "19306F"
             },
             "Comparison": "!=",
             "Numeric value": {
