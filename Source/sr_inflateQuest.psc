@@ -2263,6 +2263,10 @@ State MonitoringInflation
 			EndIf
 			;SendModEvent("dhlp-Suspend")
 			float startTime = Utility.GetCurrentGameTime()
+			; Absorb Sperm is the body taking cum up, not an expel: it works from the first
+			; tick on and a new creampie only adds to the pool, so the minimum inflation
+			; time (which every refill restarts) and the deflate-chance roll don't apply
+			bool absorbMode = sr_OnEventNoDeflation.getvalue() == 1 && sr_OnEventAbsorbSperm.getvalue() == 1
 			While n > 0
 				
 				int queued = 0
@@ -2277,8 +2281,8 @@ State MonitoringInflation
 						float vagCum = GetFloatValue(a, CUM_VAGINAL)
 						float analCum = GetFloatValue(a, CUM_ANAL)
 						float oralCum = GetFloatValue(a, CUM_ORAL)
-						bool deflateVag = vagCum > 0 && lastVagTime > 0.0 && ( GameDaysPassed.GetValue() - lastVagTime ) * 24 >= config.minInflationTime; Needs improvement
-						bool deflateAnal = analCum > 0 && lastAnalTime > 0.0 && ( GameDaysPassed.GetValue() - lastAnalTime ) * 24 >= config.minInflationTime
+						bool deflateVag = vagCum > 0 && (absorbMode || (lastVagTime > 0.0 && ( GameDaysPassed.GetValue() - lastVagTime ) * 24 >= config.minInflationTime)); Needs improvement
+						bool deflateAnal = analCum > 0 && (absorbMode || (lastAnalTime > 0.0 && ( GameDaysPassed.GetValue() - lastAnalTime ) * 24 >= config.minInflationTime))
 						bool deflateOral = oralCum > 0 && lastoralTime > 0.0 && ( GameDaysPassed.GetValue() - lastoralTime ) * 24 >= config.minInflationTime
 						
 						If deflateAnal && deflateVag ; only deflate once per tic
@@ -2315,7 +2319,7 @@ State MonitoringInflation
 					;	float defTime = Utility.RandomFloat(4.0, 8.0)
 					;	log("deflate time: " + deftime)
 						
-						if deflateVag && Utility.RandomInt(0, 99) < GetDeflateChance(a)
+						if deflateVag && (absorbMode || Utility.RandomInt(0, 99) < GetDeflateChance(a))
 					;		log("Trying to remove vaginal cum")
 							if plugged == 1 || plugged == 3
 								log("Plugged!")
@@ -2345,7 +2349,7 @@ State MonitoringInflation
 							endIf
 						EndIf
 						
-						if deflateAnal && Utility.RandomInt(0, 99) < GetDeflateChance(a)
+						if deflateAnal && (absorbMode || Utility.RandomInt(0, 99) < GetDeflateChance(a))
 						;	log("Trying to remove anal cum")
 							if plugged == 2 || plugged == 3
 								log("Plugged!")
