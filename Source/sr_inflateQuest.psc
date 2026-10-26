@@ -189,6 +189,14 @@ String Property TULL_UNEQUIP_LIST = "sr.inflater.tull.unequip.list" autoreadonly
 String Property TULL_UNEQUIP_AT = "sr.inflater.tull.unequip.at" autoreadonly hidden
 String Property LEAK_UNEQUIP_LIST = "sr.inflater.leak.unequip.list" autoreadonly hidden
 String Property LEAK_UNEQUIP_AT = "sr.inflater.leak.unequip.at" autoreadonly hidden
+String Property IMPREGNATED_AT_VAG = "sr.inflater.impregnated.vaginal" autoreadonly hidden
+String Property IMPREGNATED_AT_ANAL = "sr.inflater.impregnated.anal" autoreadonly hidden
+
+; chaurus-type eggs (Impregnation Events): game hours before they hatch, fill the
+; larvae add per event check, and the % chance a check makes them stir (rub)
+float Property EGG_GESTATION_HOURS = 5.0 autoreadonly hidden
+float Property LARVA_GROWTH = 0.5 autoreadonly hidden
+int Property LARVA_STIR_CHANCE = 30 autoreadonly hidden
 
 int property VAGINAL		= 0x01 autoreadonly hidden
 int property ANAL		= 0x02 autoreadonly hidden
@@ -350,6 +358,73 @@ Function RubStomach(actor akactor)
 	endif
 	sr_FHUStomachRumblingMarker.play(akactor)
 	notify("$FHU_STOMACHRUMBLE_MESSAGES")
+EndFunction
+
+; eggs laid in this hole (type 1 vaginal, 2 anal): starts the gestation clock
+Function Impregnate(Actor a, int type)
+	If type == 2
+		a.AddToFaction(sr_Impregnatedanal)
+		SetFloatValue(a, IMPREGNATED_AT_ANAL, Utility.GetCurrentGameTime())
+		If a == player
+			bPlayerImpregnatedAnal = true
+		EndIf
+	Else
+		a.AddToFaction(sr_Impregnated)
+		SetFloatValue(a, IMPREGNATED_AT_VAG, Utility.GetCurrentGameTime())
+		If a == player
+			bPlayerImpregnated = true
+		EndIf
+	EndIf
+EndFunction
+
+; the hole drained, so the eggs/larvae left with it; a later chaurus fill starts
+; a fresh gestation instead of resuming this one
+Function EndImpregnation(Actor a, int type)
+	If type == 2
+		a.RemoveFromFaction(sr_Impregnatedanal)
+		UnsetFloatValue(a, IMPREGNATED_AT_ANAL)
+		If a == player
+			bPlayerImpregnatedAnal = false
+		EndIf
+	Else
+		a.RemoveFromFaction(sr_Impregnated)
+		UnsetFloatValue(a, IMPREGNATED_AT_VAG)
+		If a == player
+			bPlayerImpregnated = false
+		EndIf
+	EndIf
+EndFunction
+
+; one Impregnation Events check: the eggs hatch after EGG_GESTATION_HOURS, then the
+; larvae grow the hole up to the normal max (never into a burst) and now and then stir
+Function EggEvent(Actor a, int type, Faction eggFaction)
+	If a.GetFactionRank(eggFaction) < 1
+		String clockKey = IMPREGNATED_AT_VAG
+		If type == 2
+			clockKey = IMPREGNATED_AT_ANAL
+		EndIf
+		float laidAt = GetFloatValue(a, clockKey)
+		float now = Utility.GetCurrentGameTime()
+		If laidAt <= 0.0
+			; impregnated before the clock existed: gestation starts now
+			SetFloatValue(a, clockKey, now)
+		ElseIf (now - laidAt) * 24.0 >= EGG_GESTATION_HOURS
+			a.SetFactionRank(eggFaction, 1) ; hatched
+			EggHatchEffect(a)
+		EndIf
+		return
+	EndIf
+
+	float room = config.maxInflation - GetTotalCum(a) - GetOralCum(a)
+	If room > 0.05
+		If room > LARVA_GROWTH
+			room = LARVA_GROWTH
+		EndIf
+		InflateDeflate(a, true, type, room, 0.2, "")
+	EndIf
+	If Utility.RandomInt(0, 99) < LARVA_STIR_CHANCE
+		RubStomach(a)
+	EndIf
 EndFunction
 
 float Function GetVersion()
@@ -1087,41 +1162,14 @@ int i
 
 		int actori = GetCreatureRaceint(injector)
 		if ReserveRace == "Chaurus" && (actori >= 4 && actori <= 6)
-			if type == 1
-				if !akactor.isinfaction(sr_Impregnated)
-					If akactor == player
-						bPlayerImpregnated = true
-					endif
-					akactor.addtofaction(sr_Impregnated)
-					return
-				endif
-				if bevent
-					if akactor.getfactionrank(sr_Impregnated) == 0
-						akactor.setfactionrank(sr_Impregnated, 1);hatched
-						EggHatchEffect(akactor)
-					elseif akactor.getfactionrank(sr_Impregnated) == 1
-						InflateDeflate(akactor, true, type, 0.5, 0.2, "")
-						RubStomach(akactor)
-					endif
-				endif
-				;Feel something in my belly message fire
-			elseif type == 2
-				if !akactor.isinfaction(sr_Impregnatedanal)
-					If akactor == player
-						bPlayerImpregnatedAnal = true
-					endif
-					akactor.addtofaction(sr_Impregnatedanal)
-				endif
-				if bevent
-					if akactor.getfactionrank(sr_Impregnatedanal) == 0
-						akactor.setfactionrank(sr_Impregnatedanal, 1);hatched
-						EggHatchEffect(akactor)
-					elseif akactor.getfactionrank(sr_Impregnatedanal) == 1
-						InflateDeflate(akactor, true, type, 0.5, 0.2, "")
-						RubStomach(akactor)
-					endif
-				endif
-				;Feel something in my belly message fire
+			Faction eggFaction = sr_Impregnated
+			if type == 2
+				eggFaction = sr_Impregnatedanal
+			endif
+			if !akactor.IsInFaction(eggFaction)
+				Impregnate(akactor, type)
+			elseif bEvent
+				EggEvent(akactor, type, eggFaction)
 			endif
 			return
 		elseif ReserveRace == "Chaurus" && (actori < 4 || actori > 6)
@@ -2214,49 +2262,9 @@ State MonitoringInflation
 		RegisterForSingleUpdateGameTime(1.0)
 	EndEvent
 
-	function RemoveSpermFromActor(actor akactor, int type = 1, String ReserveRace = "", bool bEvent = false)
-		If !(akactor == player)
-			return
-		endif
-		int i
-		if type == 1
-			i = sr_InjectorFormlist.getsize()
-		elseif type == 2
-			i = FormListCount(akactor,  "sr.inflater.analinjector")
-		endif
-		
-		if i > 0
-			int randomi = Utility.randomint(0, i - 1)
-			actor injector
-			if type == 1
-				injector = sr_InjectorFormlist.getat(randomi) as Actor
-			elseif type == 2
-				injector = FormListGet(akactor, "sr.inflater.analinjector", randomi) as Actor
-			endif
-
-			int actori = GetCreatureRaceint(injector)
-			if ReserveRace == "Chaurus" && (actori >= 4 && actori <= 6)
-				if type == 1
-					if !akactor.isinfaction(sr_Impregnated)
-						bPlayerImpregnated = true
-						akactor.addtofaction(sr_Impregnated)
-					endif
-				elseif type == 2
-					if !akactor.isinfaction(sr_Impregnatedanal)
-						bPlayerImpregnatedAnal = true
-						akactor.addtofaction(sr_Impregnatedanal)
-					endif
-				endif
-				return
-			elseif ReserveRace == "Chaurus" && (actori < 4 || actori > 6)
-				if type == 1
-					sr_InjectorFormlist.RemoveAddedForm(injector)
-				elseif type == 2
-					FormListRemove(akactor, "sr.inflater.analinjector", injector)
-				endif
-			endif
-		endif
-	endfunction
+	; no RemoveSpermFromActor override here: the hourly egg check only runs while
+	; the player is inflated, i.e. in this state, and the old copy here had no
+	; hatch/stir branch, so the eggs never hatched and the rub never played
 
 	Event OnUpdateGameTime()
 		int n = FormListCount(self, INFLATED_ACTORS) 
@@ -2563,18 +2571,18 @@ EndFunction
 
 Function RemoveFaction(Actor a)
 	a.RemoveFromFaction(inflateFaction)
-	a.RemoveFromFaction(sr_Impregnated)
-	bPlayerImpregnated = false
+	EndImpregnation(a, 1)
+	; every caller has both holes empty; anal eggs used to outlive even a reset
+	EndImpregnation(a, 2)
 EndFunction
 
 Function RemoveAnalFaction(Actor a)
-	a.RemoveFromFaction(sr_Impregnatedanal)
-	bPlayerImpregnatedAnal = false
+	EndImpregnation(a, 2)
 EndFunction
 
 bool Function AddImpregnatedFaction(Actor a)
 	If !a.IsInFaction(sr_Impregnated)
-		a.addToFaction(sr_Impregnated)
+		Impregnate(a, 1)
 		return false
 	else
 		return true
@@ -2583,7 +2591,7 @@ EndFunction
 
 bool Function AddImpregnatedAnalFaction(Actor a)
 	If !a.IsInFaction(sr_Impregnatedanal)
-		a.addToFaction(sr_Impregnatedanal)
+		Impregnate(a, 2)
 		return false
 	else
 		return true

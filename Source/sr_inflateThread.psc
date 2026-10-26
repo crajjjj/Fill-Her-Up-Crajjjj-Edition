@@ -562,6 +562,7 @@ Function Deflate()
 				analCum = 0.0
 				UnsetFloatValue(akActor, inflater.LAST_TIME_ANAL)
 				UnsetFloatValue(akActor, inflater.CUM_ANAL)
+				inflater.EndImpregnation(akActor, 2)
 				FormListClear(akActor, "sr.inflater.analinjector")
 			Else
 				SetFloatValue(akActor, inflater.CUM_ANAL, analCum)
@@ -572,6 +573,7 @@ Function Deflate()
 				vagCum = 0.0
 				UnsetFloatValue(akActor, inflater.LAST_TIME_VAG)
 				UnsetFloatValue(akActor, inflater.CUM_VAGINAL)
+				inflater.EndImpregnation(akActor, 1)
 				if akActor == inflater.player
 					inflater.sr_InjectorFormlist.revert()
 				else
@@ -804,6 +806,7 @@ Function Absorb()
 				analCum = 0.0
 				UnsetFloatValue(akActor, inflater.LAST_TIME_ANAL)
 				UnsetFloatValue(akActor, inflater.CUM_ANAL)
+				inflater.EndImpregnation(akActor, 2)
 				FormListClear(akActor, "sr.inflater.analinjector")
 			else
 				SetFloatValue(akActor, inflater.CUM_ANAL, analCum)
@@ -814,6 +817,7 @@ Function Absorb()
 				vagCum = 0.0
 				UnsetFloatValue(akActor, inflater.LAST_TIME_VAG)
 				UnsetFloatValue(akActor, inflater.CUM_VAGINAL)
+				inflater.EndImpregnation(akActor, 1)
 				if akActor == inflater.player
 					inflater.sr_InjectorFormlist.revert()
 				else

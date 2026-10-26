@@ -410,6 +410,7 @@ Function doPush(int type)
 			vagCum = 0.0
 			UnsetFloatValue(p, inflater.LAST_TIME_VAG)
 			UnsetFloatValue(p, inflater.CUM_VAGINAL)
+			inflater.EndImpregnation(p, 1)
 			sr_InjectorFormlist.revert()
 		Else
 			SetFloatValue(p, inflater.CUM_VAGINAL, vagCum)
@@ -420,6 +421,7 @@ Function doPush(int type)
 			analCum = 0.0
 			UnsetFloatValue(p, inflater.LAST_TIME_ANAL)
 			UnsetFloatValue(p, inflater.CUM_ANAL)
+			inflater.EndImpregnation(p, 2)
 			FormListClear(p, "sr.inflater.analinjector")
 		Else
 			SetFloatValue(p, inflater.CUM_ANAL, analCum)
