@@ -421,7 +421,6 @@ Function doPush(int type)
 			analCum = 0.0
 			UnsetFloatValue(p, inflater.LAST_TIME_ANAL)
 			UnsetFloatValue(p, inflater.CUM_ANAL)
-			inflater.EndImpregnation(p, 2)
 			FormListClear(p, "sr.inflater.analinjector")
 		Else
 			SetFloatValue(p, inflater.CUM_ANAL, analCum)
