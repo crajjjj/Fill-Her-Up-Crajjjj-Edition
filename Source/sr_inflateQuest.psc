@@ -1960,7 +1960,11 @@ Function StopLeakage(Actor akActor, int cumType)
 				TryPlayIdle(akactor, BaboAnimsOralEnd[0])
 			endif
 		ElseIf anim == 2
-			Debug.SendAnimationEvent(akActor, "BleedOutStop")
+			; the burst release plays a Babo Start->Loop->End sequence on the
+			; player only; BleedOutStop never ended its loop, the End idle does
+			If akActor == player
+				TryPlayIdle(akactor, BaboAnimsEnd[animnum])
+			EndIf
 		EndIf
 		UnsetIntValue(akActor, ANIMATING)
 		UnsetIntValue(akActor, ANIMATE_NUM)
